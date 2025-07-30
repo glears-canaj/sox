@@ -1,0 +1,25 @@
+name: Enforce Checklist
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  enforce-checklist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check checklist
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prBody = context.payload.pull_request.body || "";
+            const checklist = [
+              '- [x] I have reviewed the documentation associated with this ticket',
+              '- [x] I have verified the implementation matches the requirements'
+            ];
+            const failed = checklist.some(item => !prBody.includes(item));
+            if (failed) {
+              core.setFailed("Checklist not fully completed. Please check all required boxes.");
+            } else {
+              core.info("Checklist validated successfully.");
+            }
