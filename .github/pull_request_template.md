@@ -1,3 +1,3 @@
 ### Checklist
 
-- [x] I confirm documentation is reviewed
+- [ ] I confirm documentation is reviewed
