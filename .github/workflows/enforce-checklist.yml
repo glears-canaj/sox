@@ -25,4 +25,4 @@ jobs:
               core.setFailed("Missing or incomplete: 'Do you have the confirmation to proceed into production via Mail?'");
             }
 
-            console.log("✅ All required checklist items are present and checked.");
+            console.log("All required checklist items are present and checked.");
