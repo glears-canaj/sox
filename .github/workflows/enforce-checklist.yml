@@ -13,10 +13,13 @@ jobs:
         with:
           script: |
             const prBody = context.payload.pull_request.body;
-            const checklist = "- [x] I confirm documentation is reviewed";
-
-            if (!prBody || !prBody.includes(checklist)) {
-              core.setFailed("Checklist not fully completed. Please ensure the documentation confirmation is checked.");
-            } else {
-              console.log("Checklist confirmed. ✅");
+            const checklist1 = "- [x] Is the VCT completed, finalized and attached in the ticket?";
+            const checklist2 = "- [x] Is the VCT completed, finalized and attached in the ticket? ";
+             if (!prBody.includes(checklist1)) {
+              core.setFailed("Missing or incomplete: ' Is the VCT completed, finalized and attached in the ticket?'");
             }
+
+            if (!prBody.includes(checklist2)) {
+              core.setFailed("Missing or incomplete: ' Is the VCT completed, finalized and attached in the ticket?");
+            }
+            console.log("✅ All required checklist items are present and checked.");
