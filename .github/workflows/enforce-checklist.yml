@@ -8,7 +8,8 @@ jobs:
   check-pr-template:
     name: Verify Checklist Completion
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == false
+    # Only run if the PR is open (not merged or closed)
+    if: github.event.pull_request.state != 'closed'
 
     steps:
       - name: Check out PR
@@ -20,7 +21,6 @@ jobs:
         run: |
           echo "Checking checklist..."
 
-          # Check for both checkboxes marked as [x]
           echo "$BODY" | grep -q "\- \[x\] Is the VCT completed, finalized and attached in the ticket?" || {
             echo "❌ VCT checkbox not checked."
             exit 1
