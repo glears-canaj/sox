@@ -1,29 +1,34 @@
-name: Enforce Checklist
+name: Enforce PR Checklist
 
 on:
   pull_request:
-    types: [opened, edited, synchronize]
+    types: [opened, reopened, synchronize, ready_for_review]
 
 jobs:
   check-pr-template:
-    if: github.event.pull_request.merged == false
+    name: Verify Checklist Completion
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == false
+
     steps:
-      - name: Check for required checklist items
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prBody = context.payload.pull_request.body || "";
+      - name: Check out PR
+        uses: actions/checkout@v3
 
-            const checklist1 = "- [x] Is the VCT completed, finalized and attached in the ticket?";
-            const checklist2 = "- [x] Do you have the confirmation to proceed into production via Mail?";
+      - name: Validate Checklist in Pull Request Body
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          echo "Checking checklist..."
 
-            if (!prBody.includes(checklist1)) {
-              core.setFailed("Missing or incomplete: 'Is the VCT completed, finalized and attached in the ticket?'");
-            }
+          # Check for both checkboxes marked as [x]
+          echo "$BODY" | grep -q "\- \[x\] Is the VCT completed, finalized and attached in the ticket?" || {
+            echo "❌ VCT checkbox not checked."
+            exit 1
+          }
 
-            if (!prBody.includes(checklist2)) {
-              core.setFailed("Missing or incomplete: 'Do you have the confirmation to proceed into production via Mail?'");
-            }
+          echo "$BODY" | grep -q "\- \[x\] Do you have the confirmation to proceed into production via Mail?" || {
+            echo "❌ Mail confirmation checkbox not checked."
+            exit 1
+          }
 
-            console.log("All required checklist items are present and checked.");
+          echo "✅ All checklist items are completed."
