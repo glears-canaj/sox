@@ -5,7 +5,8 @@ on:
     types: [opened, edited, synchronize]
 
 jobs:
-  check-pr-description:
+  check-pr-template:
+    if: github.event.pull_request.merged == false
     runs-on: ubuntu-latest
     steps:
       - name: Check for required checklist items
